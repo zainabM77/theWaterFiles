@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>THE WATER FILES, A WNN Interactive Special</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--navy:#EAF4F9; --navy2:#DCEDF5; --card:#FFFFFF; --card2:#F0F7FB;
+--red:#E88A78; --cyan:#5BA8C9; --cyandk:#7FB9D4; --gold:#E0A84E;
+--white:#1E3A47; --gray:#6E8A99; --lgray:#43606E;
+--line:rgba(91,168,201,0.28); --green:#6Fc79a;
+}
+html{scroll-behavior:smooth}
+body{
+background:radial-gradient(ellipse 90% 50% at 50% 0%,rgba(91,168,201,.18) 0%,transparent 60%),var(--navy);
+color:var(--white); font-family:'Inter',sans-serif; min-height:100vh; overflow-x:hidden;
+}
+h1,h2,h3,.bc{font-family:'Barlow Condensed',sans-serif}
+
+/* ═══ NAV ═══ */
+nav{
+position:sticky; top:0; z-index:100;
+background:rgba(234,244,249,.92); backdrop-filter:blur(12px);
+border-bottom:1px solid var(--line);
+}
+.nav-inner{max-width:1100px;margin:0 auto;padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;letter-spacing:1px;line-height:1}
+.logo .w{color:var(--cyan)}
+.logo-sub{font-size:8px;letter-spacing:2.5px;color:var(--gray);font-weight:500}
+.tabs{display:flex;gap:2px}
+.tab{
+background:none;border:none;color:var(--gray);cursor:pointer;
+font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:600;letter-spacing:1.5px;
+padding:8px 14px;border-radius:6px;transition:all .2s;
+}
+.tab:hover{color:var(--white)}
+.tab.active{color:var(--white);background:var(--card)}
+.tab .n{color:var(--cyan);margin-right:4px;font-size:12px}
+@media(max-width:640px){.tab{font-size:13px;padding:6px 8px;letter-spacing:.5px}.logo-sub{display:none}}
+
+/* ═══ PAGES ═══ */
+.page{display:none;animation:fadeIn .45s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.container{max-width:1100px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+
+.kicker{
+display:inline-block;background:var(--red);color:#fff;
+font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:3px;font-size:14px;
+padding:5px 16px;margin-bottom:18px;
+}
+.hero{text-align:center;padding:46px 0 26px}
+.hero h1{font-size:clamp(38px,6.5vw,68px);font-weight:800;line-height:.98;letter-spacing:1px;margin-bottom:14px}
+.hero h1 .accent{color:var(--cyan)}
+.hero p{font-size:clamp(14px,2vw,17px);color:var(--lgray);max-width:640px;margin:0 auto;font-weight:300;line-height:1.65}
+
+/* ═══ PAGE 1, METER ═══ */
+.meter-wrap{
+background:linear-gradient(180deg,#FFFFFF,#E4F0F7);
+border:1px solid var(--line);border-radius:18px;padding:30px;margin:16px 0 36px;
+box-shadow:0 12px 40px rgba(91,168,201,.22);
+}
+.meter-label{font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:3px;color:var(--cyan);font-weight:600;text-align:center;margin-bottom:4px}
+.meter-value{font-family:'Barlow Condensed',sans-serif;font-size:clamp(54px,11vw,104px);font-weight:800;text-align:center;line-height:1;text-shadow:0 0 30px rgba(91,168,201,.35)}
+.meter-value.pulse{animation:pop .35s ease}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.06);color:var(--cyan)}100%{transform:scale(1)}}
+.meter-unit{text-align:center;color:var(--gray);font-size:15px;margin-top:2px;letter-spacing:1px}
+.bar-track{height:13px;background:rgba(91,168,201,.14);border-radius:8px;margin:22px 0 10px;overflow:hidden}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--cyandk),var(--cyan));border-radius:8px;width:0%;transition:width .5s cubic-bezier(.22,1,.36,1);box-shadow:0 0 12px rgba(91,168,201,.5)}
+.meter-compare{text-align:center;font-size:14px;color:var(--lgray);min-height:22px}
+.meter-compare strong{color:var(--gold)}
+.sec-title{font-family:'Barlow Condensed',sans-serif;font-size:21px;letter-spacing:2px;font-weight:700;text-align:center;margin-bottom:4px}
+.sec-sub{text-align:center;color:var(--gray);font-size:13.5px;margin-bottom:22px;font-weight:300}
+.actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px;margin-bottom:26px}
+.action{
+background:var(--card);border:1px solid var(--line);border-radius:13px;padding:18px;
+cursor:pointer;transition:transform .15s,border-color .2s,background .2s;
+text-align:left;display:flex;flex-direction:column;gap:7px;position:relative;color:var(--white);
+font-family:'Inter',sans-serif;
+}
+.action:hover{transform:translateY(-3px);border-color:var(--cyan);background:var(--card2)}
+.action:active{transform:scale(.98)}
+.action .icon{font-size:28px;line-height:1}
+.action .a-title{font-weight:600;font-size:15px}
+.action .a-cost{font-size:12.5px;color:var(--cyan);font-weight:500}
+.a-count{position:absolute;top:12px;right:14px;font-family:'Barlow Condensed',sans-serif;font-size:21px;font-weight:700;color:var(--cyan);opacity:0;transform:scale(.5);transition:all .2s}
+.a-count.show{opacity:1;transform:scale(1)}
+.btn-ghost{
+background:transparent;color:var(--gray);border:1px solid var(--line);border-radius:30px;
+padding:9px 24px;font-size:12.5px;font-weight:500;cursor:pointer;letter-spacing:1px;transition:all .2s;
+font-family:'Inter',sans-serif;
+}
+.btn-ghost:hover{color:var(--white);border-color:var(--cyan)}
+.center{text-align:center}
+.next-cta{
+display:inline-flex;align-items:center;gap:10px;margin:34px auto 60px;
+background:var(--cyan);color:#FFFFFF;border:none;border-radius:30px;
+padding:14px 34px;font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;letter-spacing:2px;
+cursor:pointer;transition:all .2s;
+}
+.next-cta:hover{transform:scale(1.04);box-shadow:0 10px 30px rgba(53,196,215,.35)}
+
+/* ═══ PAGE 2, RIPPLE ═══ */
+#rippleCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.ripple-stage{position:relative;min-height:520px;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(180deg,#CFE8F3,#A9D3E6);margin-bottom:36px;cursor:crosshair}
+.ripple-overlay{position:relative;z-index:2;pointer-events:none;padding:44px 26px;display:flex;flex-direction:column;align-items:center;gap:22px}
+.ripple-hint{font-size:12px;color:var(--gray);letter-spacing:2px;text-transform:uppercase}
+.live-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;width:100%;max-width:900px}
+.lstat{
+background:rgba(255,255,255,.78);backdrop-filter:blur(4px);
+border:1px solid var(--line);border-radius:14px;padding:22px 18px;text-align:center;
+}
+.lstat .num{font-family:'Barlow Condensed',sans-serif;font-size:clamp(34px,5vw,50px);font-weight:800;color:var(--cyan);line-height:1}
+.lstat .num.warn{color:var(--red)}
+.lstat .lab{font-size:12.5px;color:var(--lgray);margin-top:8px;line-height:1.5}
+.lstat .src{font-size:9.5px;color:var(--gray);margin-top:8px;font-style:italic}
+.today-banner{
+background:rgba(232,138,120,.16);border:1px solid rgba(232,138,120,.5);border-radius:14px;
+padding:18px 22px;text-align:center;max-width:760px;
+}
+.today-banner .t-num{font-family:'Barlow Condensed',sans-serif;font-size:44px;font-weight:800;color:var(--red);line-height:1}
+.today-banner .t-lab{font-size:13px;color:var(--lgray);margin-top:6px;line-height:1.55}
+
+/* Tap scenario */
+.tap-sec{margin-bottom:60px}
+.tap-head{text-align:center;margin-bottom:26px}
+.tap-head h2{font-size:clamp(28px,4.5vw,42px);font-weight:800;letter-spacing:1px}
+.tap-head h2 .accent{color:var(--red)}
+.tap-timeline{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:22px}
+.tap-step{
+background:var(--card);border:1px solid var(--line);color:var(--gray);border-radius:30px;
+padding:9px 18px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:1px;
+cursor:pointer;transition:all .2s;
+}
+.tap-step:hover{color:var(--white);border-color:var(--cyan)}
+.tap-step.active{background:var(--red);border-color:var(--red);color:#fff}
+.tap-card{
+background:var(--card);border:1px solid var(--line);border-radius:16px;padding:32px;
+max-width:820px;margin:0 auto;min-height:170px;
+}
+.tap-card h3{font-size:24px;color:var(--cyan);letter-spacing:1px;margin-bottom:10px}
+.tap-card h3.danger{color:var(--red)}
+.tap-card p{font-size:15px;color:var(--lgray);line-height:1.7;font-weight:300}
+.tap-card p strong{color:var(--white);font-weight:600}
+
+/* ═══ PAGE 3, MAP ═══ */
+.map-stage{
+position:relative;border-radius:18px;border:1px solid var(--line);
+background:linear-gradient(180deg,#CFE8F3,#A9D3E6);overflow:hidden;margin-bottom:22px;
+}
+.map-svg{width:100%;height:auto;display:block}
+.continent{fill:rgba(91,168,201,.18);stroke:rgba(91,168,201,.4);stroke-width:1.2}
+.node{cursor:pointer}
+.node circle.core{fill:var(--cyan);transition:r .2s}
+.node circle.halo{fill:none;stroke:var(--cyan);stroke-width:1.4;opacity:.7;animation:halo 2.6s ease-out infinite}
+.node.crisis circle.core{fill:var(--red)}
+.node.crisis circle.halo{stroke:var(--red)}
+.node.progress circle.core{fill:var(--green)}
+.node.progress circle.halo{stroke:var(--green)}
+.node:hover circle.core{r:9}
+.node text{fill:var(--lgray);font-family:'Inter',sans-serif;font-size:10px;pointer-events:none}
+@keyframes halo{0%{r:6;opacity:.75}100%{r:22;opacity:0}}
+.map-legend{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:26px;font-size:12.5px;color:var(--gray)}
+.map-legend span{display:flex;align-items:center;gap:7px}
+.dotl{width:11px;height:11px;border-radius:50%;display:inline-block}
+.country-panel{
+background:var(--card);border:1px solid var(--line);border-radius:16px;padding:30px;
+margin-bottom:60px;display:none;animation:fadeIn .35s ease;
+}
+.country-panel.open{display:block}
+.cp-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.cp-head h2{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:1px}
+.cp-tag{background:var(--red);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;padding:5px 14px;align-self:center}
+.cp-tag.ok{background:var(--cyandk)}
+.cp-tag.good{background:#2C7A4B}
+.cp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:20px}
+.cp-stat{background:var(--navy2);border:1px solid var(--line);border-radius:12px;padding:18px}
+.cp-stat .l{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:6px}
+.cp-stat .v{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:800;color:var(--cyan);line-height:1.05}
+.cp-stat .d{font-size:12px;color:var(--lgray);margin-top:6px;line-height:1.5}
+.cp-progress{margin:6px 0 18px}
+.cp-progress .pl{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:10px}
+.prow{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.prow .yr{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--gray);width:44px;font-weight:600}
+.prow .ptrack{flex:1;height:10px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden}
+.prow .pfill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--cyandk),var(--cyan));width:0%;transition:width .8s cubic-bezier(.22,1,.36,1)}
+.prow .pv{font-family:'Barlow Condensed',sans-serif;font-size:15px;color:var(--white);width:44px;font-weight:700;text-align:right}
+.cp-story{background:var(--navy2);border:1px solid rgba(232,181,77,.35);border-radius:12px;padding:20px;margin-bottom:14px}
+.cp-story .sl{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.cp-story p{font-size:13.5px;color:var(--lgray);line-height:1.7;font-weight:300}
+.cp-story p strong{color:var(--white)}
+.cp-src{font-size:10.5px;color:var(--gray);font-style:italic}
+.map-note{text-align:center;color:var(--gray);font-size:12px;margin-bottom:60px;font-style:italic}
+
+/* ═══ PAGE 4, ACTION ═══ */
+.hub{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:18px;margin-bottom:40px}
+.hub-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;display:flex;flex-direction:column}
+.hub-card h3{font-size:22px;letter-spacing:1px;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.hub-card .sub{font-size:12.5px;color:var(--gray);margin-bottom:16px}
+.hub-link{
+display:flex;justify-content:space-between;align-items:center;gap:10px;
+background:var(--navy2);border:1px solid var(--line);border-radius:10px;
+padding:12px 15px;margin-bottom:9px;text-decoration:none;color:var(--white);
+font-size:13.5px;font-weight:500;transition:all .2s;
+}
+.hub-link:hover{border-color:var(--cyan);background:var(--card2)}
+.hub-link .arr{color:var(--cyan);font-weight:700}
+.hub-link .desc{display:block;font-size:11px;color:var(--gray);font-weight:300;margin-top:3px}
+/* checklist */
+.chk{display:flex;align-items:flex-start;gap:12px;background:var(--navy2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:9px;cursor:pointer;transition:all .2s}
+.chk:hover{border-color:var(--cyan)}
+.chk.done{border-color:var(--green);background:rgba(126,217,160,.07)}
+.chk .box{width:20px;height:20px;border:2px solid var(--gray);border-radius:5px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--green);transition:all .2s}
+.chk.done .box{border-color:var(--green);background:rgba(126,217,160,.15)}
+.chk .ct{font-size:13px;font-weight:500}
+.chk .cs{display:block;font-size:11px;color:var(--cyan);margin-top:2px}
+.saved-banner{
+background:linear-gradient(135deg,#CDE7F1,#E4F0F7);border-radius:12px;
+padding:16px;text-align:center;margin-top:auto;
+}
+.saved-banner .sv{font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:800;color:var(--white);line-height:1}
+.saved-banner .sl2{font-size:11.5px;color:var(--lgray);margin-top:3px}
+/* letter */
+.letter-box{background:var(--navy2);border:1px solid var(--line);border-radius:10px;padding:16px;font-size:12px;color:var(--lgray);line-height:1.65;max-height:230px;overflow-y:auto;margin-bottom:12px;white-space:pre-wrap;font-family:'Inter',sans-serif}
+.copy-btn{
+background:var(--gold);color:#2a1a00;border:none;border-radius:26px;padding:11px 24px;
+font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:all .2s;
+}
+.copy-btn:hover{transform:scale(1.03)}
+.copy-btn.copied{background:var(--green);color:#0a2a15}
+/* pledge */
+.pledge-final{
+background:linear-gradient(135deg,#BFE0EE,#DCEDF5);border-radius:18px;padding:44px 30px;
+text-align:center;margin-bottom:60px;border:1px solid var(--line);
+}
+.pledge-final h2{font-size:clamp(28px,5vw,42px);font-weight:800;letter-spacing:1px;margin-bottom:10px}
+.pledge-final p{color:var(--lgray);font-size:14.5px;max-width:560px;margin:0 auto 22px;line-height:1.65;font-weight:300}
+.pledge-btn{
+background:var(--gold);color:#2a1a00;border:none;border-radius:30px;padding:15px 42px;
+font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;letter-spacing:2px;cursor:pointer;transition:all .2s;
+}
+.pledge-btn:hover{transform:scale(1.05);box-shadow:0 10px 30px rgba(232,181,77,.35)}
+.pledge-msg{margin-top:16px;color:var(--gold);font-weight:600;font-size:14px;min-height:20px}
+
+footer{text-align:center;padding:26px 20px 46px;color:var(--gray);font-size:11.5px;line-height:1.7;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+<div class="nav-inner">
+<div>
+<div class="logo"><span class="w">W</span>NN</div>
+<div class="logo-sub">THE WATER FILES</div>
+</div>
+<div class="tabs">
+<button class="tab active" data-page="p1"><span class="n">01</span>THE METER</button>
+<button class="tab" data-page="p2"><span class="n">02</span>THE RIPPLE</button>
+<button class="tab" data-page="p3"><span class="n">03</span>THE MAP</button>
+<button class="tab" data-page="p4"><span class="n">04</span>TAKE ACTION</button>
+</div>
+</div>
+</nav>
+
+<!-- ═══════════ PAGE 1, THE METER ═══════════ -->
+<div class="page active" id="p1">
+<div class="container">
+<div class="hero">
+<span class="kicker">INTERACTIVE SPECIAL REPORT</span>
+<h1>THE <span class="accent">WATER</span> METER</h1>
+<p>Every click, every coffee, every pair of jeans has a hidden water bill. Tap your day into the meter, then see who's really paying for it.</p>
+</div>
+
+<div class="meter-wrap">
+<div class="meter-label">YOUR RUNNING WATER FOOTPRINT</div>
+<div class="meter-value" id="meterValue">0</div>
+<div class="meter-unit">litres of water</div>
+<div class="bar-track"><div class="bar-fill" id="meterBar"></div></div>
+<div class="meter-compare" id="meterCompare">Tap an action below to begin.</div>
+</div>
+
+<div class="sec-title">WHAT DID YOU DO TODAY?</div>
+<div class="sec-sub">Tap each action as many times as you did it.</div>
+<div class="actions" id="actions"></div>
+<div class="center"><button class="btn-ghost" id="resetBtn">↺ Reset the meter</button></div>
+
+<div class="center">
+<button class="next-cta" data-goto="p2">SEE WHO PAYS THE PRICE →</button>
+</div>
+</div>
+</div>
+
+<!-- ═══════════ PAGE 2, THE RIPPLE ═══════════ -->
+<div class="page" id="p2">
+<div class="container">
+<div class="hero">
+<span class="kicker">LIVE COUNTERS</span>
+<h1>THE <span class="accent">RIPPLE</span> EFFECT</h1>
+<p>Touch the water. Every ripple you make represents lives shaped by the crisis, right now, as you read this.</p>
+</div>
+
+<div class="ripple-stage" id="rippleStage">
+<canvas id="rippleCanvas"></canvas>
+<div class="ripple-overlay">
+<div class="ripple-hint">◦ tap or move across the water ◦</div>
+
+<div class="today-banner">
+<div class="t-num" id="childrenToday">0</div>
+<div class="t-lab"><strong>children under five have died so far today</strong> from diseases linked to unsafe water, sanitation and hygiene, more than 1,000 every single day.<br><span style="font-size:10px;font-style:italic;color:var(--gray)">UNICEF / WHO estimates</span></div>
+</div>
+
+<div class="live-stats">
+<div class="lstat">
+<div class="num">2.2B</div>
+<div class="lab">people lack safely managed drinking water</div>
+<div class="src">WHO/UNICEF JMP, 2025</div>
+</div>
+<div class="lstat">
+<div class="num">3.4B</div>
+<div class="lab">people lack safely managed sanitation</div>
+<div class="src">WHO/UNICEF JMP, 2025</div>
+</div>
+<div class="lstat">
+<div class="num warn">6,028</div>
+<div class="lab">cholera deaths in 2024, a 50% rise in one year</div>
+<div class="src">WHO Global Cholera Report</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- WHAT IF YOUR TAP STOPPED WORKING -->
+<div class="tap-sec">
+<div class="tap-head">
+<span class="kicker">THOUGHT EXPERIMENT</span>
+<h2>WHAT IF <span class="accent">YOUR TAP</span> STOPPED WORKING?</h2>
+</div>
+<div class="tap-timeline" id="tapTimeline"></div>
+<div class="tap-card" id="tapCard">
+<h3 id="tapTitle">Hour 1</h3>
+<p id="tapBody"></p>
+</div>
+</div>
+
+<div class="center">
+<button class="next-cta" data-goto="p3">EXPLORE THE WORLD MAP →</button>
+</div>
+<div style="height:40px"></div>
+</div>
+</div>
+
+<!-- ═══════════ PAGE 3, THE MAP ═══════════ -->
+<div class="page" id="p3">
+<div class="container">
+<div class="hero">
+<span class="kicker">INTERACTIVE INVESTIGATION</span>
+<h1>THE WATER <span class="accent">INEQUALITY</span> MAP</h1>
+<p>Water access isn't random, it follows the map of poverty, colonization and power. Click any glowing node to open its file.</p>
+</div>
+
+<div class="map-legend">
+<span><span class="dotl" style="background:var(--red)"></span> Active crisis</span>
+<span><span class="dotl" style="background:var(--cyan)"></span> Ongoing inequity</span>
+<span><span class="dotl" style="background:var(--green)"></span> Progress story</span>
+</div>
+
+<div class="map-stage">
+<svg class="map-svg" viewBox="0 0 1000 520" id="worldMap" xmlns="http://www.w3.org/2000/svg">
+<!-- abstract low-poly continents -->
+<polygon class="continent" points="120,70 210,48 300,55 335,95 330,140 295,185 250,215 215,190 185,150 140,115"/>
+<polygon class="continent" points="278,235 335,238 348,285 335,340 312,378 295,372 284,315 276,265"/>
+<polygon class="continent" points="468,178 545,168 605,205 612,255 592,300 552,352 522,332 488,265 470,215"/>
+<polygon class="continent" points="470,85 545,65 588,92 580,128 532,142 488,125"/>
+<polygon class="continent" points="560,62 700,52 850,62 882,120 858,165 795,200 748,208 700,182 645,172 596,140 572,105"/>
+<polygon class="continent" points="782,228 850,232 846,262 795,258"/>
+<polygon class="continent" points="806,298 880,296 888,346 826,352"/>
+<!-- nodes injected by JS -->
+<g id="nodes"></g>
+</svg>
+</div>
+
+<div class="country-panel" id="countryPanel">
+<div class="cp-head">
+<h2 id="cpName">, </h2>
+<span class="cp-tag" id="cpTag">CRISIS</span>
+</div>
+<div class="cp-grid" id="cpGrid"></div>
+<div class="cp-progress">
+<div class="pl">Access to at least basic drinking water, progress over time</div>
+<div id="cpProgress"></div>
+</div>
+<div class="cp-story">
+<div class="sl">LOCAL STORY</div>
+<p id="cpStory"></p>
+</div>
+<div class="cp-src" id="cpSrc"></div>
+</div>
+
+<p class="map-note">Figures are approximate, drawn from WHO/UNICEF JMP data and cited reports; for education and advocacy. Click another node to compare.</p>
+
+<div class="center">
+<button class="next-cta" data-goto="p4">READY TO ACT? →</button>
+</div>
+<div style="height:40px"></div>
+</div>
+</div>
+
+<!-- ═══════════ PAGE 4, TAKE ACTION ═══════════ -->
+<div class="page" id="p4">
+<div class="container">
+<div class="hero">
+<span class="kicker">THE ACTION HUB</span>
+<h1>TURN THE <span class="accent">TAP</span> BACK ON</h1>
+<p>Awareness without action is just spectating. Here's your toolkit, sign, volunteer, save, and speak up. Pick one thing and do it today.</p>
+</div>
+
+<div class="hub">
+
+<!-- PETITIONS -->
+<div class="hub-card">
+<h3>✍️ Sign &amp; Support</h3>
+<div class="sub">Campaigns fighting for water justice right now</div>
+<a class="hub-link" href="https://canadians.org/fn-water/" target="_blank" rel="noopener">
+<span>Safe Water for First Nations<span class="desc">Council of Canadians, end all drinking water advisories</span></span><span class="arr">↗</span>
+</a>
+<a class="hub-link" href="https://www.watercan.com/" target="_blank" rel="noopener">
+<span>WaterAid Canada<span class="desc">Clean water, decent toilets &amp; hygiene worldwide</span></span><span class="arr">↗</span>
+</a>
+<a class="hub-link" href="https://water.org/" target="_blank" rel="noopener">
+<span>Water.org<span class="desc">Water &amp; sanitation microloans in 11 countries</span></span><span class="arr">↗</span>
+</a>
+<a class="hub-link" href="https://www.charitywater.org/" target="_blank" rel="noopener">
+<span>charity: water<span class="desc">100% of public donations fund water projects</span></span><span class="arr">↗</span>
+</a>
+<a class="hub-link" href="https://www.un.org/sustainabledevelopment/water-and-sanitation/" target="_blank" rel="noopener">
+<span>UN SDG 6, Act Now<span class="desc">The global goal: water &amp; sanitation for all by 2030</span></span><span class="arr">↗</span>
+</a>
+</div>
+
+<!-- VOLUNTEER -->
+<div class="hub-card">
+<h3>🌊 Volunteer Locally</h3>
+<div class="sub">Get your hands wet, GTA &amp; Ontario groups</div>
+<a class="hub-link" href="https://www.swimdrinkfish.ca/" target="_blank" rel="noopener">
+<span>Swim Drink Fish<span class="desc">Citizen water-quality monitoring on Lake Ontario</span></span><span class="arr">↗</span>
+</a>
+<a class="hub-link" href="https://agreenerfuture.ca/" target="_blank" rel="noopener">
+<span>A Greener Future<span class="desc">Shoreline &amp; litter cleanups across Ontario</span></span><span class="arr">↗</span>
+</a>
+<a class="hub-link" href="https://watersheds.ca/" target="_blank" rel="noopener">
+<span>Watersheds Canada<span class="desc">Restore shorelines &amp; protect freshwater habitats</span></span><span class="arr">↗</span>
+</a>
+<a class="hub-link" href="https://waterrangers.ca/" target="_blank" rel="noopener">
+<span>Water Rangers<span class="desc">Test local water quality with community kits</span></span><span class="arr">↗</span>
+</a>
+<a class="hub-link" href="https://waterfirst.ngo/" target="_blank" rel="noopener">
+<span>Water First<span class="desc">Training Indigenous water operators in Canada</span></span><span class="arr">↗</span>
+</a>
+</div>
+
+<!-- HOUSEHOLD -->
+<div class="hub-card">
+<h3>🚿 Cut Your Water Waste</h3>
+<div class="sub">Check off what you'll commit to, watch the savings add up</div>
+<div id="chkList"></div>
+<div class="saved-banner">
+<div class="sv"><span id="savedNum">0</span> L</div>
+<div class="sl2">estimated water you'd save per year</div>
+</div>
+</div>
+
+<!-- CONTACT REPS -->
+<div class="hub-card">
+<h3>🏛️ Contact Your Rep</h3>
+<div class="sub">Copy this letter, find your MP, hit send, 3 minutes</div>
+<div class="letter-box" id="letterBox">Dear [MP's name],
+
+I am a nursing student and constituent writing about Canada's unfinished promise of safe drinking water for First Nations.
+
+As of this year, roughly 37 First Nations communities remain under long-term drinking water advisories, including Neskantaga First Nation, which has boiled its water for over 30 years. The Auditor General has rated Canada's progress "unsatisfactory."
+
+Water is a human right, recognized by UN Resolution 64/292. I am asking you to:
+1. Support the reintroduction and passage of First Nations clean-water legislation (the successor to Bill C-61), with guaranteed, sustainable funding;
+2. Close the annual operations-and-maintenance funding gap for on-reserve water systems identified by the Parliamentary Budget Officer;
+3. Support regulation requiring industrial and data-centre water users to report and reduce consumption in water-stressed regions.
+
+As a future nurse, I see the downstream cost of unsafe water in human health. I would welcome your response outlining your position.
+
+Respectfully,
+[Your name]
+[Your riding]</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<button class="copy-btn" id="copyBtn">COPY LETTER</button>
+<a class="hub-link" style="flex:1;margin:0" href="https://www.ourcommons.ca/members/en" target="_blank" rel="noopener"><span>Find your MP</span><span class="arr">↗</span></a>
+</div>
+</div>
+
+</div>
+
+<!-- PLEDGE -->
+<div class="pledge-final">
+<h2>ADD YOUR VOICE</h2>
+<p>Water is a right, not a privilege. Pledge to carry this into your practice, as a nurse, an advocate, and a neighbour.</p>
+<button class="pledge-btn" id="pledgeBtn">I PLEDGE FOR WATER 💧</button>
+<div class="pledge-msg" id="pledgeMsg"></div>
+</div>
+
+</div>
+</div>
+
+<footer>
+<div class="bc" style="letter-spacing:2px;color:var(--lgray);font-size:13px">WNN, WORLD NURSING NETWORK · THE WATER FILES</div>
+<div>Group 2 · NURS 3512 · Global &amp; Environmental Health · Clean Water &amp; Sanitation</div>
+<div style="margin-top:8px">Data drawn from WHO/UNICEF JMP (2025), WHO Global Cholera Report (2024), Indigenous Services Canada, and cited research. Figures approximate; for education and advocacy.</div>
+</footer>
+
+<script>
+/* ═══════════ NAV / PAGES ═══════════ */
+const tabs=document.querySelectorAll('.tab');
+const pages=document.querySelectorAll('.page');
+function go(id){
+tabs.forEach(t=>t.classList.toggle('active',t.dataset.page===id));
+pages.forEach(p=>p.classList.toggle('active',p.id===id));
+window.scrollTo({top:0,behavior:'smooth'});
+if(id==='p2') startRipple();
+if(id==='p3') buildMapOnce();
+}
+tabs.forEach(t=>t.addEventListener('click',()=>go(t.dataset.page)));
+document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.goto)));
+
+/* ═══════════ PAGE 1, METER ═══════════ */
+const ACTIONS=[
+{id:"ai",icon:"🤖",title:"Asked an AI a question",cost:0.5,unit:"~0.5 L each"},
+{id:"search",icon:"🔎",title:"Ran a web search",cost:0.02,unit:"~0.02 L each"},
+{id:"email",icon:"✉️",title:"Sent an email",cost:0.03,unit:"~0.03 L each"},
+{id:"stream",icon:"📺",title:"Streamed 1 hr of video",cost:1.5,unit:"~1.5 L / hr"},
+{id:"shower",icon:"🚿",title:"Took a shower",cost:65,unit:"~65 L each"},
+{id:"coffee",icon:"☕",title:"Made a cup of coffee",cost:140,unit:"~140 L (bean to cup)"},
+{id:"jeans",icon:"👖",title:"Bought new jeans",cost:7500,unit:"~7,500 L to make"},
+{id:"beef",icon:"🍔",title:"Ate a beef burger",cost:2400,unit:"~2,400 L each"},
+];
+const COMPARE=[
+{max:5,text:"About a few gulps of drinking water."},
+{max:50,text:"Roughly a person's <strong>drinking water for a week</strong>."},
+{max:150,text:"About one <strong>full bathtub</strong>."},
+{max:1000,text:"A day's basic water for <strong>20 people</strong>."},
+{max:5000,text:"Drinking water for <strong>one person for 3+ years</strong>."},
+{max:20000,text:"More than a <strong>small swimming pool</strong>."},
+{max:Infinity,text:"Safe drinking water for <strong>a village for weeks</strong>."},
+];
+const METER_FULL=10000;
+let total=0; const counts={};
+const actionsEl=document.getElementById('actions');
+ACTIONS.forEach(a=>{
+counts[a.id]=0;
+const b=document.createElement('button');
+b.className='action';
+b.innerHTML=`<span class="a-count" id="c-${a.id}">0</span><span class="icon">${a.icon}</span><span class="a-title">${a.title}</span><span class="a-cost">${a.unit}</span>`;
+b.onclick=()=>{total+=a.cost;counts[a.id]++;const c=document.getElementById('c-'+a.id);c.textContent=counts[a.id];c.classList.add('show');renderMeter(true);};
+actionsEl.appendChild(b);
+});
+const mv=document.getElementById('meterValue'),mb=document.getElementById('meterBar'),mc=document.getElementById('meterCompare');
+function fmt(n){if(n>=1000)return n.toLocaleString(undefined,{maximumFractionDigits:0});if(n>=10)return n.toFixed(0);if(n>=1)return n.toFixed(1);return n.toFixed(2);}
+function renderMeter(pulse){
+mv.textContent=fmt(total);
+if(pulse){mv.classList.remove('pulse');void mv.offsetWidth;mv.classList.add('pulse');}
+mb.style.width=Math.min(100,total/METER_FULL*100)+'%';
+mc.innerHTML=total===0?'Tap an action below to begin.':(COMPARE.find(c=>total<=c.max)||COMPARE.at(-1)).text;
+}
+document.getElementById('resetBtn').onclick=()=>{total=0;ACTIONS.forEach(a=>{counts[a.id]=0;const c=document.getElementById('c-'+a.id);c.textContent='0';c.classList.remove('show');});renderMeter(false);};
+renderMeter(false);
+
+/* ═══════════ PAGE 2, RIPPLE CANVAS ═══════════ */
+let rippleStarted=false;
+function startRipple(){
+if(rippleStarted)return; rippleStarted=true;
+const stage=document.getElementById('rippleStage');
+const cv=document.getElementById('rippleCanvas');
+const ctx=cv.getContext('2d');
+let ripples=[];
+function resize(){cv.width=stage.clientWidth;cv.height=stage.clientHeight;}
+resize(); window.addEventListener('resize',resize);
+function addRipple(x,y,big){
+ripples.push({x,y,r:2,max:big?Math.min(cv.width,cv.height)*0.55:90+Math.random()*70,alpha:.9,speed:big?2.6:1.6});
+if(ripples.length>60)ripples.shift();
+}
+stage.addEventListener('pointerdown',e=>{const r=stage.getBoundingClientRect();addRipple(e.clientX-r.left,e.clientY-r.top,true);});
+let lastMove=0;
+stage.addEventListener('pointermove',e=>{
+const now=Date.now(); if(now-lastMove<70)return; lastMove=now;
+const r=stage.getBoundingClientRect();addRipple(e.clientX-r.left,e.clientY-r.top,false);
+});
+// ambient ripples
+setInterval(()=>{addRipple(Math.random()*cv.width,Math.random()*cv.height,false);},1400);
+function tick(){
+ctx.clearRect(0,0,cv.width,cv.height);
+ripples.forEach(rp=>{
+rp.r+=rp.speed; rp.alpha=Math.max(0,.9*(1-rp.r/rp.max));
+if(rp.alpha<=0)return;
+ctx.beginPath();ctx.arc(rp.x,rp.y,rp.r,0,Math.PI*2);
+ctx.strokeStyle=`rgba(91,168,201,${rp.alpha})`;ctx.lineWidth=1.6;ctx.stroke();
+ctx.beginPath();ctx.arc(rp.x,rp.y,rp.r*0.62,0,Math.PI*2);
+ctx.strokeStyle=`rgba(91,168,201,${rp.alpha*0.4})`;ctx.lineWidth=1;ctx.stroke();
+});
+ripples=ripples.filter(rp=>rp.alpha>0);
+requestAnimationFrame(tick);
+}
+tick();
+}
+
+/* children-today counter: >1000 under-5 deaths/day from WASH-linked disease */
+const DAILY=1000;
+function childrenToday(){
+const now=new Date();
+const frac=(now.getHours()*3600+now.getMinutes()*60+now.getSeconds())/86400;
+return Math.floor(DAILY*frac);
+}
+const ctEl=document.getElementById('childrenToday');
+function tickChildren(){ctEl.textContent=childrenToday().toLocaleString();}
+tickChildren(); setInterval(tickChildren,30000);
+
+/* tap scenario */
+const TAP_STEPS=[
+{t:"Hour 1",title:"Hour 1, Inconvenience",body:"You turn the tap. Nothing. Annoying, but fine, there's a case of bottled water in the garage, and the kettle's already full. You text your landlord and assume it'll be fixed by dinner."},
+{t:"Day 1",title:"Day 1, Improvising",body:"No shower this morning. The toilet needs a bucket to flush. You're rationing the bottled water between drinking, brushing teeth, and washing your hands. <strong>Cooking dinner suddenly requires planning.</strong>"},
+{t:"Day 3",title:"Day 3, The maths of survival",body:"The WHO says a person needs <strong>50–100 litres per day</strong> for basic health and hygiene. You're living on a fraction of that. Dishes pile up. You skip washing produce. Your hands are never quite clean, and you start to understand how disease spreads."},
+{t:"Week 1",title:"Week 1, Health on the line",body:"Someone in the house has a stomach bug, was it the food? The unwashed hands? Hauling jugs from the store is now a daily chore that eats <strong>hours</strong>. Globally, this burden falls on women and girls in 4 out of 5 water-insecure households."},
+{t:"Month 1",title:"Month 1, Life reorganized",body:"Everything now revolves around water: getting it, storing it, boiling it, rationing it. School, work, and rest all come second. Your household budget bleeds money on bottled water. <strong>This is daily life for 2.2 billion people.</strong>"},
+{t:"Year 1",title:"Year 1, A generation shaped",body:"A full year. Children in the house have never known a working tap. Trust in the system is gone, even if it's fixed tomorrow, would you drink from it? Chronic stress, skin infections, and waterborne illness have become normal background noise."},
+{t:"Year 30",title:"Year 30, This is Neskantaga",body:"This isn't hypothetical. <strong>Neskantaga First Nation in northern Ontario has lived under a boil-water advisory since 1995</strong>, over 11,000 days. Elders have died waiting. Children have grown up, and had children, without ever safely drinking from a tap. A short flight away, city taps run clean.",danger:true},
+];
+const tl=document.getElementById('tapTimeline'),tTitle=document.getElementById('tapTitle'),tBody=document.getElementById('tapBody');
+TAP_STEPS.forEach((s,i)=>{
+const b=document.createElement('button');b.className='tap-step'+(i===0?' active':'');b.textContent=s.t;
+b.onclick=()=>{document.querySelectorAll('.tap-step').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+tTitle.textContent=s.title;tTitle.className=s.danger?'danger':'';tBody.innerHTML=s.body;};
+tl.appendChild(b);
+});
+tTitle.textContent=TAP_STEPS[0].title;tBody.innerHTML=TAP_STEPS[0].body;
+
+/* ═══════════ PAGE 3, MAP ═══════════ */
+const COUNTRIES=[
+{id:"canada",name:"Canada, First Nations",x:255,y:110,type:"crisis",tag:"ACTIVE CRISIS",
+stats:[["Long-term advisories","~37","communities under long-term drinking water advisories (2025–26)"],
+["Longest advisory","30+ yrs","Neskantaga First Nation, boil-water since 1995"],
+["Auditor General","\u201CUnsatisfactory\u201D","2025 rating of Canada's progress on safe water"]],
+prog:[["2015","~105 advisories",30],["2020","~60",55],["2025","~37",70]],progNote:true,
+story:"<strong>Neskantaga, ON:</strong> Children have grown up, graduated, and had children of their own without ever safely drinking from a tap. Twice the community has been evacuated over its water. Even after upgrades, residents ask: \u201CHow long will it take for the people to trust the water?\u201D",
+src:"Indigenous Watchdog (2025) · Globe & Mail (2025) · Indigenous Services Canada"},
+{id:"usa",name:"United States",x:262,y:145,type:"ineq",tag:"ONGOING INEQUITY",
+stats:[["Data centres","49B gal","water Texas data centres will draw in 2025, 399B by 2030"],
+["Flint, Michigan","2014–19","lead-contaminated water hit a majority-Black city"],
+["Jackson, MS","2022","system collapse left 150,000 without safe water"]],
+prog:[["2000","96%",96],["2015","97%",97],["2024","97%",97]],
+story:"<strong>Water inequity is a wealthy-country problem too.</strong> Flint and Jackson showed race and income predict water safety in the US, while AI data centres in drought-stressed regions now compete with residents for drinking water.",
+src:"Lincoln Institute (2026) · MOST Policy Initiative (2026)"},
+{id:"mexico",name:"Mexico",x:225,y:200,type:"ineq",tag:"ONGOING INEQUITY",
+stats:[["Mexico City","~22M","people in a megacity nearing a \u2018Day Zero\u2019 water scenario"],
+["Aquifer","2x","the city extracts groundwater roughly twice as fast as it refills"],
+["Unequal taps","Wealthy vs poor","affluent districts get steady supply; poor colonias get tandas (rationing)"]],
+prog:[["2000","88%",88],["2015","96%",96],["2024","~97%",97]],
+story:"<strong>Mexico City is sinking</strong>, literally, as it drains its aquifer. In 2024, reservoirs fell so low that officials openly discussed \u2018Day Zero.\u2019 Access maps onto class: the poorest neighbourhoods queue for water trucks.",
+src:"JMP 2025 · public reporting on the 2024 Cutzamala crisis"},
+{id:"bolivia",name:"Bolivia",x:316,y:297,type:"progress",tag:"PROGRESS STORY",
+stats:[["Cochabamba 2000","Water War","mass uprising reversed water privatization after prices soared"],
+["Legacy","Human right","Bolivia led the 2010 UN resolution recognizing water as a human right"],
+["Basic water","~94%","of population with at least basic drinking water (2024 est.)"]],
+prog:[["2000","79%",79],["2015","90%",90],["2024","94%",94]],
+story:"<strong>The Cochabamba Water War</strong> is the world's most famous anti-privatization revolt: when a private consortium hiked prices, citizens shut down the city until the contract was cancelled. Bolivia then championed water as a human right at the UN.",
+src:"Bakker (2007), Antipode · UN Res. 64/292 (2010)"},
+{id:"chile",name:"Chile",x:305,y:342,type:"ineq",tag:"ONGOING INEQUITY",
+stats:[["Water code","1981","dictatorship-era law grants private, tradable water rights"],
+["Left dry","1M+","Chileans lack reliable access to clean water despite 1,250 rivers"],
+["Exports","50%+","of water-intensive fruit production is exported"]],
+prog:[["2000","95%",95],["2015","98%",98],["2024","99%",99]],
+story:"<strong>Chile privatized water itself</strong>, not just the pipes. Agribusiness holds free water rights from the Pinochet era while rural communities truck water in. High national averages hide who actually gets the water.",
+src:"Heinrich B\u00F6ll Stiftung Water Atlas (2025)"},
+{id:"guinea",name:"Guinea",x:469,y:222,type:"progress",tag:"PROGRESS STORY",
+stats:[["Privatized","1989","under World Bank structural adjustment conditions"],
+["Reversed","2003","re-municipalized after price hikes and inequitable access"],
+["Basic water","~64%","of population with at least basic drinking water"]],
+prog:[["2000","52%",52],["2015","60%",60],["2024","64%",64]],
+story:"<strong>Guinea tried privatization and closed the book on it.</strong> After years of price hikes, evictions and poor coverage, the state took its water back in 2003, one of many global 're-municipalizations' that followed failed neoliberal reforms.",
+src:"Earth.Org (2021) · JMP 2025"},
+{id:"drc",name:"DR Congo",x:561,y:261,type:"crisis",tag:"ACTIVE CRISIS",
+stats:[["Basic water","~46%","of population with at least basic drinking water"],
+["Cholera 2023","8,000+","children under five infected in North Kivu in seven months"],
+["Drivers","Conflict","displacement + broken WASH infrastructure fuel outbreaks"]],
+prog:[["2000","41%",41],["2015","44%",44],["2024","46%",46]],
+story:"<strong>In North Kivu's displacement camps,</strong> families drink from the same lake water where sewage flows. The DRC's 2023 outbreak was its worst in over half a decade, cholera follows conflict as surely as night follows day.",
+src:"UNICEF (2024) · JMP 2025"},
+{id:"zambia",name:"Zambia",x:577,y:292,type:"crisis",tag:"ACTIVE CRISIS",
+stats:[["2023–24 outbreak","23,000+","cholera cases, 740+ deaths by mid-2024"],
+["Children","48%","of cases occurred in those under 15"],
+["Epicentre","Lusaka","dense informal settlements with inadequate sanitation"]],
+prog:[["2000","49%",49],["2015","61%",61],["2024","~68%",68]],
+story:"<strong>Lusaka's outbreak spread to nine provinces in three months.</strong> Schools closed; a stadium became a cholera treatment centre. The pattern repeats every 3–5 years, because the underlying WASH infrastructure never gets fixed.",
+src:"PLOS / PMC retrospective study (2025)"},
+{id:"ssudan",name:"South Sudan",x:583,y:230,type:"crisis",tag:"ACTIVE CRISIS",
+stats:[["2024–25 outbreak","40,000+","cholera cases, the worst in 20 years"],
+["Deaths","694+","reported countrywide by March 2025"],
+["Children","50%","of cases were under 15 years old"]],
+prog:[["2000","~30%",30],["2015","~39%",39],["2024","~41%",41]],
+story:"<strong>South Sudan's children are the outbreak.</strong> Half of all cases are under 15. Flooding, displacement, and one of the world's weakest water systems mean each rainy season rewrites the same emergency.",
+src:"UNICEF ESA (2025) · WHO DON (2025)"},
+{id:"ethiopia",name:"Ethiopia",x:608,y:225,type:"ineq",tag:"ONGOING INEQUITY",
+stats:[["Basic water","~54%","of population with at least basic drinking water"],
+["Drought","Recurring","Horn of Africa droughts push families onto unsafe sources"],
+["Distance","Hours daily","women and girls carry the water-fetching burden"]],
+prog:[["2000","19%",19],["2015","44%",44],["2024","54%",54]],
+story:"<strong>Ethiopia has nearly tripled basic water access since 2000</strong>, real progress, yet climate-driven drought keeps erasing gains. When wells dry, girls walk further, and school attendance drops with every kilometre.",
+src:"JMP 2025 · Climate & WASH scoping review (2024)"},
+{id:"yemen",name:"Yemen",x:631,y:208,type:"crisis",tag:"ACTIVE CRISIS",
+stats:[["Cholera history","2.5M+","suspected cases since 2016, the largest epidemic ever recorded"],
+["Conflict","10+ yrs","war has destroyed water treatment and health systems"],
+["Aid dependent","Millions","rely on trucked or humanitarian water supplies"]],
+prog:[["2000","~55%",55],["2015","~60%",60],["2024","~57%",57]],
+story:"<strong>Yemen shows what happens when war targets water.</strong> Airstrikes and blockades crippled treatment plants; cholera did the rest. It remains the textbook case of water as a casualty, and weapon, of conflict.",
+src:"WHO · humanitarian reporting"},
+{id:"india",name:"India",x:717,y:192,type:"progress",tag:"PROGRESS STORY",
+stats:[["Toilets built","100M+","under the Swachh Bharat sanitation mission (2014–19)"],
+["Open defecation","Plummeted","one of the fastest sanitation gains in history"],
+["Jal Jeevan","Tap water","mission to pipe water to every rural household"]],
+prog:[["2000","62%",62],["2015","88%",88],["2024","93%",93]],
+story:"<strong>Proof that scale is possible:</strong> India built over 100 million toilets in five years and is now piping tap water to rural homes. Quality and maintenance debates continue, but the trajectory shows political will works.",
+src:"JMP 2025 · Government of India"},
+{id:"bangladesh",name:"Bangladesh",x:750,y:183,type:"ineq",tag:"ONGOING INEQUITY",
+stats:[["Arsenic","~20M","people exposed to arsenic-contaminated groundwater"],
+["Irony","Tubewells","wells drilled to avoid dirty surface water tapped poisoned aquifers"],
+["Climate","Salinity","rising seas are salinizing coastal drinking water"]],
+prog:[["2000","95%",95],["2015","97%",97],["2024","98%",98]],
+story:"<strong>The \u2018largest mass poisoning in history\u2019:</strong> millions of tubewells meant to deliver safe water instead delivered arsenic. Bangladesh is also on the front line of climate change, saltwater is creeping into coastal taps.",
+src:"WHO · JMP 2025"},
+{id:"safrica",name:"South Africa",x:550,y:344,type:"ineq",tag:"ONGOING INEQUITY",
+stats:[["Cape Town","2018","\u2018Day Zero\u2019 nearly shut off a major city's taps"],
+["Averted","50 L/day","strict rationing + rains saved the city at the brink"],
+["Legacy","Apartheid","spatial inequality still maps onto water infrastructure"]],
+prog:[["2000","83%",83],["2015","90%",90],["2024","94%",94]],
+story:"<strong>Cape Town came within weeks of Day Zero</strong>, the first major city to nearly run dry. It survived on 50 litres per person per day. The warning stands for every drought-exposed city, from Mexico City to Chennai.",
+src:"public reporting · JMP 2025"},
+{id:"angola",name:"Angola",x:547,y:283,type:"crisis",tag:"ACTIVE CRISIS",
+stats:[["2025 outbreak","7,500+","cholera cases and 294 deaths across 14 provinces (Jan–Mar)"],
+["Basic water","~59%","of population with at least basic drinking water"],
+["Risk","Escalating","WHO assesses high risk of further spread"]],
+prog:[["2000","41%",41],["2015","54%",54],["2024","59%",59]],
+story:"<strong>Angola's 2025 outbreak spread through provinces where taps are a luxury.</strong> Oil wealth hasn't reached the water pipes, a reminder that GDP and water justice are not the same thing.",
+src:"UNICEF ESA (2025) · JMP 2025"},
+];
+let mapBuilt=false;
+function buildMapOnce(){
+if(mapBuilt)return; mapBuilt=true;
+const g=document.getElementById('nodes');
+COUNTRIES.forEach(c=>{
+const node=document.createElementNS('http://www.w3.org/2000/svg','g');
+node.setAttribute('class','node '+(c.type==='crisis'?'crisis':c.type==='progress'?'progress':''));
+node.innerHTML=`<circle class="halo" cx="${c.x}" cy="${c.y}" r="7"/><circle class="core" cx="${c.x}" cy="${c.y}" r="6.5"/><text x="${c.x+11}" y="${c.y+4}">${c.name.split(', ')[0]}</text>`;
+node.addEventListener('click',()=>openCountry(c));
+g.appendChild(node);
+});
+}
+function openCountry(c){
+const panel=document.getElementById('countryPanel');
+document.getElementById('cpName').textContent=c.name;
+const tag=document.getElementById('cpTag');
+tag.textContent=c.tag;
+tag.className='cp-tag '+(c.type==='progress'?'good':c.type==='ineq'?'ok':'');
+document.getElementById('cpGrid').innerHTML=c.stats.map(s=>`<div class="cp-stat"><div class="l">${s[0]}</div><div class="v">${s[1]}</div><div class="d">${s[2]}</div></div>`).join('');
+const pr=document.getElementById('cpProgress');
+pr.innerHTML=c.prog.map(p=>`<div class="prow"><span class="yr">${p[0]}</span><div class="ptrack"><div class="pfill" data-w="${p[2]}"></div></div><span class="pv">${p[1].replace('~','~')}</span></div>`).join('');
+document.getElementById('cpStory').innerHTML=c.story;
+document.getElementById('cpSrc').textContent='Sources: '+c.src;
+panel.classList.add('open');
+requestAnimationFrame(()=>{
+panel.querySelectorAll('.pfill').forEach(f=>{f.style.width=f.dataset.w+'%';});
+panel.scrollIntoView({behavior:'smooth',block:'start'});
+});
+}
+
+/* ═══════════ PAGE 4, ACTION HUB ═══════════ */
+const CHECKS=[
+{t:"Shorten showers by 2 minutes",s:7300,d:"~20 L/day saved"},
+{t:"Fix a dripping tap",s:5500,d:"~15 L/day saved"},
+{t:"Turn off tap while brushing teeth",s:4400,d:"~12 L/day saved"},
+{t:"Run dishwasher / laundry only when full",s:3600,d:"~10 L/day saved"},
+{t:"Install a low-flow showerhead",s:9000,d:"~25 L/day saved"},
+{t:"Collect rainwater for plants",s:1800,d:"~5 L/day saved"},
+{t:"Eat one plant-based meal a week (skip 1 beef serving)",s:26000,d:"~500 L/week in virtual water"},
+];
+const chkList=document.getElementById('chkList');
+let saved=0;
+const savedNum=document.getElementById('savedNum');
+CHECKS.forEach(c=>{
+const el=document.createElement('div');el.className='chk';
+el.innerHTML=`<div class="box"></div><div><span class="ct">${c.t}</span><span class="cs">${c.d} · ~${c.s.toLocaleString()} L/yr</span></div>`;
+el.onclick=()=>{
+el.classList.toggle('done');
+el.querySelector('.box').textContent=el.classList.contains('done')?'✓':'';
+saved+=el.classList.contains('done')?c.s:-c.s;
+savedNum.textContent=saved.toLocaleString();
+};
+chkList.appendChild(el);
+});
+
+/* copy letter */
+const copyBtn=document.getElementById('copyBtn');
+copyBtn.onclick=async()=>{
+const txt=document.getElementById('letterBox').textContent;
+try{await navigator.clipboard.writeText(txt);}catch(e){
+const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();
+}
+copyBtn.textContent='✓ COPIED';copyBtn.classList.add('copied');
+setTimeout(()=>{copyBtn.textContent='COPY LETTER';copyBtn.classList.remove('copied');},2200);
+};
+
+/* pledge */
+let pledged=false;
+document.getElementById('pledgeBtn').onclick=function(){
+const msg=document.getElementById('pledgeMsg');
+if(pledged){msg.textContent='You already pledged, thank you! 💧';return;}
+pledged=true;
+this.textContent='✓ PLEDGED';this.style.background='var(--green)';
+msg.textContent='Thank you. Water is a right, carry it into your practice. 💧';
+};
+</script>
+</body>
+</html>
